@@ -18,50 +18,53 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Debug directory
+      - name: Fix next.config.mjs
         run: |
-          ls -la
+          cat > next.config.mjs << 'EOL'
+          /** @type {import('next').NextConfig} */
+          const nextConfig = {
+            eslint: {
+              ignoreDuringBuilds: true,
+            },
+            typescript: {
+              ignoreBuildErrors: true,
+            },
+            images: {
+              unoptimized: true,
+            },
+            // Add these lines for GitHub Pages
+            output: 'export',
+            basePath: '/portfolio',
+            assetPrefix: '/portfolio/',
+            trailingSlash: true,
+          }
+
+          export default nextConfig
+          EOL
+          cat next.config.mjs
+
+      - name: Downgrade React to compatible version
+        run: |
+          sed -i 's/"react": "\^19"/"react": "18.2.0"/g' package.json
+          sed -i 's/"react-dom": "\^19"/"react-dom": "18.2.0"/g' package.json
           cat package.json
 
       - name: Install dependencies
         run: |
           npm install --legacy-peer-deps --no-audit --no-fund
 
-      - name: Debug build issues
-        run: |
-          echo "Node version:"
-          node -v
-          echo "NPM version:"
-          npm -v
-          echo "Available scripts:"
-          npm run
-
-      - name: Build with debug
+      - name: Build
         run: |
           NODE_OPTIONS="--max-old-space-size=4096" npm run build
         env:
           NODE_ENV: production
           CI: false
 
-      - name: Create output directory if it doesn't exist
+      - name: Prepare for deployment
         run: |
-          mkdir -p out
           touch out/.nojekyll
-          echo "Contents of current directory:"
-          ls -la
-          echo "Contents of .next directory (if exists):"
-          ls -la .next || echo ".next directory does not exist"
-
-      - name: Export static files if needed
-        run: |
-          if [ -f "package.json" ] && grep -q "\"export\":" "package.json"; then
-            npm run export || echo "Export command failed, but continuing"
-          else
-            echo "No export script found in package.json, assuming static output is already in 'out' directory"
-            if [ ! -d "out" ] && [ -d ".next" ]; then
-              cp -r .next out
-            fi
-          fi
+          echo "Contents of out directory:"
+          ls -la out
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
