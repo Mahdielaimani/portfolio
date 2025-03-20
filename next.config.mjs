@@ -21,6 +21,11 @@ const nextConfig = {
     parallelServerBuildTraces: true,
     parallelServerCompiles: true,
   },
+  // Add these lines for GitHub Pages
+  output: 'export',
+  basePath: '/portfolio', // Replace with your repo name if different
+  assetPrefix: '/portfolio/', // Replace with your repo name if different
+  trailingSlash: true,
 }
 
 mergeConfig(nextConfig, userConfig)
