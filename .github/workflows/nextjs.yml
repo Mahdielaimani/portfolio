@@ -16,8 +16,17 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Create minimal package.json
+      - name: Create simple app
         run: |
+          # Backup original files
+          mkdir -p _backup
+          cp -r app _backup/ || true
+          cp -r components _backup/ || true
+          cp -r public _backup/ || true
+          cp package.json _backup/ || true
+          cp next.config.mjs _backup/ || true 2>/dev/null || cp next.config.js _backup/ || true 2>/dev/null
+          
+          # Create new package.json
           cat > package.json << 'EOL'
           {
             "name": "portfolio",
@@ -35,10 +44,8 @@ jobs:
             }
           }
           EOL
-          cat package.json
-
-      - name: Create minimal next.config.js
-        run: |
+          
+          # Create new next.config.js
           cat > next.config.js << 'EOL'
           /** @type {import('next').NextConfig} */
           const nextConfig = {
@@ -50,11 +57,12 @@ jobs:
           
           module.exports = nextConfig
           EOL
-          cat next.config.js
-
-      - name: Create minimal app structure
-        run: |
+          
+          # Create new app directory
+          rm -rf app
           mkdir -p app
+          
+          # Create layout.js
           cat > app/layout.js << 'EOL'
           export const metadata = {
             title: 'Portfolio',
@@ -70,25 +78,30 @@ jobs:
           }
           EOL
           
+          # Create page.js
           cat > app/page.js << 'EOL'
           export default function Home() {
             return (
               <div style={{ padding: '2rem', textAlign: 'center' }}>
                 <h1>My Portfolio</h1>
                 <p>This is a placeholder page for my portfolio.</p>
+                <p>The full site is under construction.</p>
               </div>
             )
           }
           EOL
           
-          # Remove the pages directory if it exists
+          # Remove any conflicting directories
           rm -rf pages
+          rm -rf src/pages
 
       - name: Install dependencies
         run: npm install
 
       - name: Build
         run: npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
 
       - name: Prepare for deployment
         run: |
