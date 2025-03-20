@@ -52,10 +52,25 @@ jobs:
           EOL
           cat next.config.js
 
-      - name: Create minimal pages structure
+      - name: Create minimal app structure
         run: |
-          mkdir -p pages
-          cat > pages/index.js << 'EOL'
+          mkdir -p app
+          cat > app/layout.js << 'EOL'
+          export const metadata = {
+            title: 'Portfolio',
+            description: 'My portfolio website',
+          }
+          
+          export default function RootLayout({ children }) {
+            return (
+              <html lang="en">
+                <body>{children}</body>
+              </html>
+            )
+          }
+          EOL
+          
+          cat > app/page.js << 'EOL'
           export default function Home() {
             return (
               <div style={{ padding: '2rem', textAlign: 'center' }}>
@@ -65,7 +80,9 @@ jobs:
             )
           }
           EOL
-          cat pages/index.js
+          
+          # Remove the pages directory if it exists
+          rm -rf pages
 
       - name: Install dependencies
         run: npm install
