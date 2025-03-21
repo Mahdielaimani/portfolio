@@ -1,4 +1,4 @@
-0:["dy-qUqTgLoxIQGXEGJXqq",[[["",{"children":["__PAGE__",{}]},"$undefined","$undefined",true],"$L1",[[],"$L2"]]]]
+0:["i37JlqcmIFmAGU09xD-_y",[[["",{"children":["__PAGE__",{}]},"$undefined","$undefined",true],"$L1",[[],"$L2"]]]]
 3:I{"id":7767,"chunks":["272:static/chunks/webpack-bf1a64d1eafd2816.js","971:static/chunks/fd9d1056-a99b58d3cc150217.js","596:static/chunks/596-9d43875837bd0b65.js"],"name":"default","async":false}
 4:I{"id":7920,"chunks":["272:static/chunks/webpack-bf1a64d1eafd2816.js","971:static/chunks/fd9d1056-a99b58d3cc150217.js","596:static/chunks/596-9d43875837bd0b65.js"],"name":"default","async":false}
 2:[["$","meta","0",{"charSet":"utf-8"}],["$","title","1",{"children":"Portfolio"}],["$","meta","2",{"name":"description","content":"My portfolio website"}],["$","meta","3",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]
