@@ -4,7 +4,6 @@ on:
   push:
     branches: [main]
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: write
   pages: write
@@ -97,7 +96,10 @@ jobs:
             },
             typescript: {
               ignoreBuildErrors: true
-            }
+            },
+            // Remove basePath and assetPrefix if using a custom domain
+            // basePath: '/portfolio',
+            // assetPrefix: '/portfolio/',
           }
           
           module.exports = nextConfig
@@ -145,6 +147,11 @@ jobs:
             );
           }
           EOL
+          
+          # Create CNAME file for custom domain
+          cat > public/CNAME << 'EOL'
+          genaipro.me
+          EOL
 
       - name: Install dependencies
         run: npm install
@@ -157,6 +164,9 @@ jobs:
       - name: Prepare for deployment
         run: |
           touch out/.nojekyll
+          # Copy CNAME to the output directory
+          mkdir -p out
+          cp public/CNAME out/ || echo "No CNAME file found"
           echo "Contents of out directory:"
           ls -la out
 
