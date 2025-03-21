@@ -26,7 +26,7 @@ jobs:
           cp package.json _backup/ || true
           cp next.config.mjs _backup/ || true 2>/dev/null || cp next.config.js _backup/ || true 2>/dev/null
           
-          # Create new package.json
+          # Create new package.json with TypeScript
           cat > package.json << 'EOL'
           {
             "name": "portfolio",
@@ -41,7 +41,45 @@ jobs:
               "next": "13.4.19",
               "react": "18.2.0",
               "react-dom": "18.2.0"
+            },
+            "devDependencies": {
+              "typescript": "5.0.4",
+              "@types/node": "18.16.0",
+              "@types/react": "18.0.38",
+              "@types/react-dom": "18.0.11"
             }
+          }
+          EOL
+          
+          # Create tsconfig.json
+          cat > tsconfig.json << 'EOL'
+          {
+            "compilerOptions": {
+              "target": "es5",
+              "lib": ["dom", "dom.iterable", "esnext"],
+              "allowJs": true,
+              "skipLibCheck": true,
+              "strict": false,
+              "forceConsistentCasingInFileNames": true,
+              "noEmit": true,
+              "esModuleInterop": true,
+              "module": "esnext",
+              "moduleResolution": "node",
+              "resolveJsonModule": true,
+              "isolatedModules": true,
+              "jsx": "preserve",
+              "incremental": true,
+              "plugins": [
+                {
+                  "name": "next"
+                }
+              ],
+              "paths": {
+                "@/*": ["./*"]
+              }
+            },
+            "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+            "exclude": ["node_modules"]
           }
           EOL
           
@@ -58,28 +96,30 @@ jobs:
           module.exports = nextConfig
           EOL
           
-          # Create new app directory
+          # Create new app directory with TypeScript files
           rm -rf app
           mkdir -p app
           
-          # Create layout.js
-          cat > app/layout.js << 'EOL'
+          # Create layout.tsx
+          cat > app/layout.tsx << 'EOL'
+          import { ReactNode } from 'react';
+
           export const metadata = {
             title: 'Portfolio',
             description: 'My portfolio website',
-          }
+          };
           
-          export default function RootLayout({ children }) {
+          export default function RootLayout({ children }: { children: ReactNode }) {
             return (
               <html lang="en">
                 <body>{children}</body>
               </html>
-            )
+            );
           }
           EOL
           
-          # Create page.js
-          cat > app/page.js << 'EOL'
+          # Create page.tsx
+          cat > app/page.tsx << 'EOL'
           export default function Home() {
             return (
               <div style={{ padding: '2rem', textAlign: 'center' }}>
@@ -87,7 +127,7 @@ jobs:
                 <p>This is a placeholder page for my portfolio.</p>
                 <p>The full site is under construction.</p>
               </div>
-            )
+            );
           }
           EOL
           
