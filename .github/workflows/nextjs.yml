@@ -4,6 +4,12 @@ on:
   push:
     branches: [main]
 
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -18,7 +24,7 @@ jobs:
 
       - name: Create simple app
         run: |
-          # Instead of backing up, let's just remove the problematic files
+          # Remove problematic files
           rm -rf app
           rm -rf components
           rm -rf pages
@@ -90,9 +96,6 @@ jobs:
               unoptimized: true
             },
             typescript: {
-              // !! WARN !!
-              // Dangerously allow production builds to successfully complete even if
-              // your project has type errors.
               ignoreBuildErrors: true
             }
           }
@@ -150,7 +153,6 @@ jobs:
         run: npm run build
         env:
           NEXT_TELEMETRY_DISABLED: 1
-          NEXT_IGNORE_TYPE_ERROR: 1
 
       - name: Prepare for deployment
         run: |
@@ -163,4 +165,5 @@ jobs:
         with:
           folder: out
           branch: gh-pages
+          token: ${{ secrets.GITHUB_TOKEN }}
 
